@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Piano</title>
+</head>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #424242;
+    height: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  main {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .piano {
+    position: relative;
+  }
+
+  .white-keys, .black-keys, .black-keys-group {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .black-keys {
+    position: absolute;
+    top: 0;
+    left: 28.5px;
+  }
+
+  .black-keys-group {
+    margin-right: 42px;
+  }
+
+  .key {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    align-self: flex-start;
+    border: solid 1px #424242;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+  }
+
+  .key.active {
+    background-color: green !important;
+  }
+
+  .white.key {
+    position: relative;
+    height: 165px;
+    width: 40px;
+    background-color: white;
+    color: #424242;
+    z-index: 1;
+    padding-bottom: 5px;
+  }
+
+  .black.key {
+    height: 105px;
+    width: 25px;
+    background-color: #424242;
+    z-index: 2;
+    color: white;
+    font-size: 14px;
+    padding-bottom: 5px;
+    margin-right: 15px;
+  }
+</style>
+<body>
+  <main>
+    <div class="piano">
+      <div class="white-keys"></div>
+      <div class="black-keys"></div>
+    </div>
+  </main>
+  <script>
+    const start = () => {
+      const group1 = ['1', '2'];
+      const group2 = ['3', '4', '5'];
+      const group3 = ['6', '7'];
+      const group4 = ['8', '9', '0'];
+      const blackKeysGroups = [group1, group2, group3, group4];
+      const whiteKeys = ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N'];
+      const whiteKeysContainer = document.querySelector('.white-keys');
+      const blackKeysContainer = document.querySelector('.black-keys');
+      const addKeyActiveClass = target => target.classList.add('active');
+      const removeKeyActiveClass = target => target.classList.remove('active');
+      const mouseoverCallback = event => {
+        addKeyActiveClass(event.target);
+        event.stopPropagation();
+      };
+      const mouseoutCallback = event => {
+        removeKeyActiveClass(event.target);
+        event.stopPropagation();
+      };
+      const keydownCallback = event => {
+        const keyName = event.key.toUpperCase();
+        const keyElement = document.querySelector(`.key-${keyName}`);
+        
+        if(keyElement) addKeyActiveClass(keyElement);
+      };
+      const keyupCallback = event => {
+        const keyName = event.key.toUpperCase();
+        const keyElement = document.querySelector(`.key-${keyName}`);
+        
+        if(keyElement) removeKeyActiveClass(keyElement);
+      };
+
+      document.addEventListener('keydown', keydownCallback);
+      document.addEventListener('keyup', keyupCallback);
+
+      whiteKeys.forEach(key => {
+        const keyDiv = document.createElement('div');
+        const text = document.createTextNode(key);
+
+        keyDiv.setAttribute('class', `white key key-${key}`);
+        keyDiv.appendChild(text); 
+        keyDiv.addEventListener('mouseover', mouseoverCallback);
+        keyDiv.addEventListener('mouseout', mouseoutCallback);
+        whiteKeysContainer.appendChild(keyDiv);
+      });
+
+      blackKeysGroups.forEach(group => {
+        const groupDiv = document.createElement('div');
+
+        groupDiv.setAttribute('class', 'black-keys-group');
+        group.forEach(key => {
+          const keyDiv = document.createElement('div');
+          const text = document.createTextNode(key);
+
+          keyDiv.setAttribute('class', `black key key-${key}`);
+          keyDiv.appendChild(text);
+          keyDiv.addEventListener('mouseover', mouseoverCallback);
+          keyDiv.addEventListener('mouseout', mouseoutCallback);
+          groupDiv.appendChild(keyDiv);
+        });
+
+        blackKeysContainer.appendChild(groupDiv);
+      });
+    };
+
+    start();
+  </script>
+</body>
+</html>
